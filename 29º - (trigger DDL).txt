@@ -1,0 +1,29 @@
+--trigger de DDL (disparada quando é criado criado objetos) ##conectar como system/administrador
+
+--cria tabela
+create table log_ddl(
+data date,
+usuario varchar(50),
+schema varchar(20),
+operacao varchar(100),
+objeto varchar(1000)
+);
+
+--cria trigger
+--é disparada antes de criar qualquer objeto no banco, não é vinculada a nenhuma tabela, mas sim ao banco de modo geral
+--(funciona para tudo menos insert, update e delete)
+create or replace trigger trg_log_ddl before ddl on database
+declare
+v_oper varchar(30);
+v_schema varchar(30);
+v_obj varchar(30);
+begin
+select ora_sysevent, ora_dict_obj_owner, ora_dict_obj_name
+into v_oper, v_schema, c_obj from dual;
+insert into log_ddl values (sysdate, user, v_schema, c_oper, v_obj);
+end;
+--neste caso, funciona como uma auditoria para todos os acontecimentos no banco (exceto DML)
+
+drop table *tabela* --ao excluir, é enviados as informações para a tabela log_dll
+
+select * from log_dll --visualiza todos os indices da tabela
