@@ -1,0 +1,15 @@
+--exemplo de NOT EXISTS
+--Obs: É mais util quando há mais de uma condição a retornar no subselect
+SELECT p.nu_produto "CHASSI", p.nm_modelo "MODELO" FROM PRODUTO P 
+WHERE  NOT exists (
+SELECT 1 FROM REGISTROVENDA R
+INNER JOIN LAUDO L ON L.ID_LAUDO = R.ID_LAUDO and L.IN_CANCELADO = 0
+where P.ID_PRODUTO = r.ID_PRODUTO)
+--associa o id do subselect com o id do select
+--"1" é passado para retornar 0 dados pois o subselect é utilizado como "where"
+
+--exemplo de NOT IN
+--Obs: É mais interessante quando existe apenas uma condição 
+SELECT p.nu_produto "CHASSI", p.nm_modelo "MODELO" FROM PRODUTO P 
+WHERE  p.id_produto NOT IN (
+SELECT p.id_produto FROM REGISTROVENDA R)
